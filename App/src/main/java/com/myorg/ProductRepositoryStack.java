@@ -4,12 +4,15 @@ import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.apigateway.*;
 import software.amazon.awscdk.services.apigateway.IResource;
 import software.amazon.awscdk.services.events.targets.ApiGateway;
+import software.amazon.awscdk.services.lambda.AssetCode;
 import software.amazon.awscdk.services.lambda.Runtime;
 import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.lambda.Code;
 import software.constructs.Construct;
 
 public class ProductRepositoryStack extends Stack {
+    private static final AssetCode LAMBDA_JAR = Code.fromAsset("lambda/target/lambda-0.1.jar");
+
     public ProductRepositoryStack(final Construct scope, final String id) {
         this(scope, id, null);
     }
@@ -19,18 +22,18 @@ public class ProductRepositoryStack extends Stack {
 
         Function getProductsListFunction = Function.Builder.create(this, "GetProductList")
                 .functionName("GetProductList")
-                .runtime(Runtime.NODEJS_20_X)
-                .code(Code.fromAsset("lambda"))
-                .handler("GetProductList.handler")
+                .runtime(Runtime.JAVA_21)
+                .code(LAMBDA_JAR)
+                .handler("com.myorg.GetProductsListHandler")
                 .build();
 
         // Define the GetProductDetailsHandler Lambda function
-        Function getProductByIdFunction = Function.Builder.create(this, "GetProductListById")
-                .functionName("GetProductById")
-                .runtime(Runtime.NODEJS_20_X)
-                .code(Code.fromAsset("lambda"))
-                .handler("GetProductById.handler")
-                .build();
+//        Function getProductByIdFunction = Function.Builder.create(this, "GetProductListById")
+//                .functionName("GetProductById")
+//                .runtime(Runtime.JAVA_21)
+//                .code(LAMBDA_JAR)
+//                .handler("GetProductById.handler")
+//                .build();
 
         ApiGateway api = ApiGateway.Builder.create(
                         RestApi.Builder
@@ -51,12 +54,12 @@ public class ProductRepositoryStack extends Stack {
         );
 
         // get product by id
-        products.addResource("{productId}")
-                .addMethod("GET",
-                        LambdaIntegration.Builder
-                                .create(getProductByIdFunction)
-                                .build()
-                );
+//        products.addResource("{productId}")
+//                .addMethod("GET",
+//                        LambdaIntegration.Builder
+//                                .create(getProductByIdFunction)
+//                                .build()
+//                );
 
         CfnOutput.Builder.create(this, "URL").value(root.getPath() + "products").build();
     }
