@@ -28,12 +28,12 @@ public class ProductRepositoryStack extends Stack {
                 .build();
 
         // Define the GetProductDetailsHandler Lambda function
-//        Function getProductByIdFunction = Function.Builder.create(this, "GetProductListById")
-//                .functionName("GetProductById")
-//                .runtime(Runtime.JAVA_21)
-//                .code(LAMBDA_JAR)
-//                .handler("GetProductById.handler")
-//                .build();
+        Function getProductByIdFunction = Function.Builder.create(this, "GetProductListById")
+                .functionName("GetProductById")
+                .runtime(Runtime.JAVA_21)
+                .code(LAMBDA_JAR)
+                .handler("com.myorg.GetProductsById")
+                .build();
 
         ApiGateway api = ApiGateway.Builder.create(
                         RestApi.Builder
@@ -54,12 +54,12 @@ public class ProductRepositoryStack extends Stack {
         );
 
         // get product by id
-//        products.addResource("{productId}")
-//                .addMethod("GET",
-//                        LambdaIntegration.Builder
-//                                .create(getProductByIdFunction)
-//                                .build()
-//                );
+        products.addResource("{productId}")
+                .addMethod("GET",
+                        LambdaIntegration.Builder
+                                .create(getProductByIdFunction)
+                                .build()
+                );
 
         CfnOutput.Builder.create(this, "URL").value(root.getPath() + "products").build();
     }
