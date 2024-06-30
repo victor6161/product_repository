@@ -10,6 +10,7 @@
     <modules>
         <module>lambda</module>
         <module>App</module>
+        <module>import-service</module>
     </modules>
 
     <properties>
